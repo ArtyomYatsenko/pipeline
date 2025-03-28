@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"sort"
 	"strconv"
 	"strings"
@@ -35,7 +36,7 @@ func SingleHash(in, out chan interface{}) {
 			defer wg.Done()
 			dataInt, ok := d.(int)
 			if !ok {
-				panic("Ожидается int")
+				log.Println("Ожидается int")
 			}
 			dataString := strconv.Itoa(dataInt)
 
@@ -61,6 +62,7 @@ func SingleHash(in, out chan interface{}) {
 }
 
 func MultiHash(in, out chan interface{}) {
+	quantityAction := 6
 	wg := sync.WaitGroup{}
 
 	for data := range in {
@@ -69,13 +71,13 @@ func MultiHash(in, out chan interface{}) {
 			defer wg.Done()
 			dataStr, ok := d.(string)
 			if !ok {
-				panic("Ожидается string")
+				log.Println("Ожидается string")
 			}
 
-			results := make([]string, 6)
+			results := make([]string, quantityAction)
 			innerWg := sync.WaitGroup{}
 
-			for i := 0; i < 6; i++ {
+			for i := 0; i < quantityAction; i++ {
 				innerWg.Add(1)
 				go func(idx int) {
 					defer innerWg.Done()
@@ -96,7 +98,7 @@ func CombineResults(in, out chan interface{}) {
 	for data := range in {
 		res, ok := data.(string)
 		if !ok {
-			panic("Ожидается string")
+			log.Println("Ожидается string")
 		}
 		results = append(results, res)
 	}
